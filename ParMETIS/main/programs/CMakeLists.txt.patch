@@ -1,0 +1,11 @@
+--- CMakeLists.txt	2024-02-14 11:00:44.472639417 +0100
++++ ParMETIS/programs/CMakeLists.txt	2024-02-14 11:00:58.268446450 +0100
+@@ -9,7 +9,7 @@
+ 
+ # Link with the required libraries 
+ foreach(prog pm_ptest pm_mtest pm_parmetis pm_pometis pm_dglpart)
+-  target_link_libraries(${prog} parmetis metis GKlib m)
++  target_link_libraries(${prog} parmetis metis GKlib m mpi)
+ endforeach(prog)
+ 
+ install(TARGETS pm_ptest pm_mtest pm_parmetis pm_pometis pm_dglpart

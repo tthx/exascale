@@ -1,0 +1,11 @@
+--- petsc/release/config/BuildSystem/config/packages/metis.py	2024-02-16 21:40:33.406449867 +0100
++++ /home/tth/src/metis.py	2024-02-17 08:23:15.590604935 +0100
+@@ -9,7 +9,7 @@
+     self.downloaddirnames  = ['petsc-pkg-metis']
+     self.functions         = ['METIS_PartGraphKway']
+     self.includes          = ['metis.h']
+-    self.liblist           = [['libmetis.a'],['libmetis.a','libexecinfo.a']]
++    self.liblist           = ['libmetis.a']
+     self.hastests          = 1
+     self.useddirectly      = 0
+     self.downloadonWindows = 1

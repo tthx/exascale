@@ -1,0 +1,12 @@
+--- /root/tmp/configure.ac	2023-06-13 11:52:02.375427138 +0200
++++ ./configure.ac	2023-06-13 11:52:24.894588600 +0200
+@@ -367,8 +367,7 @@
+ 
+ AC_OUTPUT(Makefile \
+           lib/Makefile \
+-          tool/Makefile \
+-          polycc.sh
++          tool/Makefile
+           )
+ 
+ echo " /*-----------------------------------------------*"

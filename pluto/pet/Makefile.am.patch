@@ -1,0 +1,11 @@
+--- /root/tmp/Makefile.am	2023-06-08 21:36:09.574534525 +0200
++++ ./Makefile.am	2023-06-08 21:36:38.757475450 +0200
+@@ -112,7 +112,7 @@
+ 	version.cc \
+ 	pet.cc
+ libpet_la_LDFLAGS = -version-info @versioninfo@ $(AM_LDFLAGS) $(CLANG_RFLAG)
+-libpet_la_LIBADD = $(CLANG_LIBS) $(CLANG_LDFLAGS) $(LIB_ISL)
++libpet_la_LIBADD = $(LIB_ISL) $(CLANG_LIBS) $(CLANG_LDFLAGS)
+ 
+ pet_CFLAGS = $(AM_CFLAGS) @LIBYAML_CPPFLAGS@
+ pet_LDFLAGS = $(AM_LDFLAGS) @LIBYAML_LDFLAGS@

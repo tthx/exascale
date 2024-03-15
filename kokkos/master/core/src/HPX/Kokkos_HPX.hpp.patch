@@ -1,0 +1,15 @@
+--- /root/tmp/Kokkos_HPX.hpp	2023-12-20 09:53:06.671184360 +0100
++++ /root/src/kokkos/master/core/src/HPX/Kokkos_HPX.hpp	2023-12-20 10:12:36.066910590 +0100
+@@ -757,9 +757,9 @@
+ 
+   static int vector_length_max() { return 1; }
+ 
+-  inline int impl_vector_length() noexcept { return 1; }
+-  inline bool impl_auto_team_size() noexcept { return false; }
+-  inline bool impl_auto_vector_length() noexcept { return false; }
++  inline int impl_vector_length() const { return 1; }
++  inline bool impl_auto_team_size() const { return false; }
++  inline bool impl_auto_vector_length() const { return false; }
+   inline void impl_set_vector_length(int) noexcept {}
+   inline void impl_set_team_size(int) noexcept {}
+ 

@@ -1,0 +1,142 @@
+#!/bin/bash
+#
+# Top-level script that runs all components of the end-to-end
+# system
+#
+# Just run 'polycc <C code>' when the program section to
+# be parallelized/optimized around special comments as described
+# in the `README'
+#
+# Copyright (C) 2007-2008 Uday Bondhugula
+#
+# Available under GNU GPL version 3 or (at your option) any later version
+#
+set -euo pipefail;
+
+pluto_bindir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
+pluto="${pluto_bindir}/pluto";
+plann="${pluto_bindir}/plann";
+plorc="${pluto_bindir}/plorc";
+inscop="${pluto_bindir}/inscop";
+
+# Some additional setup here to ensure that variables are visible outside of the run function
+src_file="";
+out_file="";
+src_dir="";
+pluto_out_file="";
+temp_file="";
+cloog_file="";
+parallel=0;
+unroll=0;
+debug=0;
+indent_arg=0;
+silent=0;
+
+# check for command-line options
+for arg in $*;
+do
+  case "${arg}" in
+    "--parallel"|"--parallelize")
+      parallel=1;
+      ;;
+    "--unroll")
+      unroll=1;
+      ;;
+    "--debug"|"--moredebug")
+      debug=1;
+      ;;
+    "-i"|"--indent")
+      indent_arg=1;
+      ;;
+    "--silent")
+      silent=1;
+      ;;
+  esac
+done
+
+# some special processing for linearized accesses
+#if [ "${src_file}" != "" ];
+#then
+  #grep __SPECIAL ${src_file} > .nonlinearized;
+  #grep __SPECIAL ${src_file} | sed -e "s/.*__SPECIAL//" > .linearized;
+#fi
+
+run() {
+  ${pluto} $* || exit 1;
+
+  src_file="$(cat .srcfilename)";
+  out_file="$(cat .outfilename)";
+
+  src_dir="$(dirname "${src_file}")";
+  base_src="$(basename "${src_file}")";
+  prefix_src="$(basename "${src_file}" ".c")";
+
+  cloog_file="$(basename "${out_file}").pluto.cloog";
+  pluto_out_file="${out_file}";
+
+  # generate and insert unrolling annotations, run ancc on it,
+  if [ ${unroll} -eq 1 ];
+  then
+      ${plorc} "${pluto_out_file}" "${pluto_bindir}/../orio-0.1.0";
+  fi
+
+  #if [ ${unroll} -eq 1 ];
+  #then
+    #$plann "${pluto_out_file}" "${pluto_bindir}/../annotations";
+  #fi
+
+  # put the original skeleton around the transformed code
+  ${inscop} "${src_file}" "${out_file}" "${out_file}";
+
+  if [ ${indent_arg} -eq  1 ] && [ -x "/usr/bin/indent" ];
+  then
+      indent -kr -br -ce -l125 "${out_file}";
+  fi
+}
+
+cleanup() {
+  # An attempt to move the original file back in place
+  # in the event of an exception
+  if [ -n "${temp_file}" ] && [ -n "${src_file}" ];
+  then
+    if [ -f "${temp_file}" ];
+    then
+      mv "${temp_file}" "${src_file}";
+    fi
+  fi
+  if [ ${debug} -ne 1 ];
+  then
+    rm -rf .unroll .vectorize .pragmas .params .orcc \
+      .linearized .nonlinearized \
+      "${cloog_file}" .srcfilename .outfilename \
+      .distmem pi.cloog sigma.cloog \
+      *.sysloog .appendfilename __tmpe;
+  fi
+}
+
+trap cleanup SIGINT EXIT;
+run "$*";
+work=1;
+while [ ${work} -eq 1 ];
+do
+  if grep -q "#pragma scop" "${pluto_out_file}";
+  then
+    # Move the original file into a temporary location
+    temp_file="${src_file}_temp";
+    mv "${src_file}" "${temp_file}";
+
+    # Move the file that still has scope in it into
+    # place of the original source file, so $* will pick the
+    # correct file
+    mv "${pluto_out_file}" "${src_file}";
+
+    # Run pluto again
+    run "$*";
+
+    # Move the original back in place
+    mv "${temp_file}" "${src_file}";
+  else
+    # No more scops
+    work=0;
+  fi
+done
