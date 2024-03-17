@@ -10,7 +10,7 @@ test_pluto() {
   local cflags="-O3 -march=native -fopenmp";
   local libs="-lgomp -lm";
   local src="seq-dptr-mult.c";
-  local src_file="${src_home}/iCube/matrix/src/${src}";
+  local src_file="${src_home}/exascale/matrix/src/${src}";
   local dest_file="/tmp/${src}";
   local exec_file="/tmp/a.out";
   local i;

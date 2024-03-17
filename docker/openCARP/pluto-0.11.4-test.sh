@@ -11,7 +11,7 @@ test_pluto() {
   local cflags="-O3 -march=native -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda";
   local libs="-lgomp -lm";
   local src="seq-dptr-mult.c";
-  local src_file="${src_home}/iCube/matrix/src/${src}";
+  local src_file="${src_home}/exascale/matrix/src/${src}";
   local dest_file="/tmp/${src}";
   local exec_file="/tmp/a.out";
   local res_file="/tmp/test-pluto-$(pluto -v|awk '/^PLUTO/{if($2!="version") print $2; else print $3;}')-$(date +%F\ %T).txt";

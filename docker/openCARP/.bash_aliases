@@ -28,7 +28,7 @@ then
 fi
 
 src_home="${HOME}/src";
-script_dir="${src_home}/iCube/docker/openCARP";
+script_dir="${src_home}/exascale/docker/openCARP";
 if [ -d "${script_dir}" ];
 then
   cd "${script_dir}";

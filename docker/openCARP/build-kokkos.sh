@@ -79,7 +79,7 @@ build_kokkos() {
   cd "${kokkos_src_dir}";
   git pull --recurse-submodules;
   #patch -b "${kokkos_src_dir}/core/src/HPX/Kokkos_HPX.hpp" \
-    #"${src_home}/iCube/kokkos/${kokkos_branch}/core/src/HPX/Kokkos_HPX.hpp.patch";
+    #"${src_home}/exascale/kokkos/${kokkos_branch}/core/src/HPX/Kokkos_HPX.hpp.patch";
   rm -rf "${kokkos_prefix}" "./build";
   mkdir "./build";
   cd "./build";

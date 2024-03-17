@@ -246,7 +246,7 @@ build_petsc() {
     ./configure.log.bkp;
   unset PETSC_DIR PETSC_ARCH HWLOC_HIDE_ERRORS;
   unpatch;
-  local patch_dir="${src_home}/iCube/petsc/${petsc_branch}";
+  local patch_dir="${src_home}/exascale/petsc/${petsc_branch}";
   patch -b "${petsc_src_dir}/config/BuildSystem/config/packages/metis.py" \
     "${patch_dir}/config/BuildSystem/config/packages/metis.py.patch";
   local x;

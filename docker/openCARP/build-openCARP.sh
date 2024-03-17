@@ -71,7 +71,7 @@ restore() {
 
 apply_patches() {
   local vect_type="${1}";
-  local new_dir="${src_home}/iCube/openCARP/${opencarp_branch}";
+  local new_dir="${src_home}/exascale/openCARP/${opencarp_branch}";
   if [ "${vect_type}" != "default" ];
   then
     cp -f "${new_dir}/numerics/petsc/petsc_utils.cc" \

@@ -24,7 +24,7 @@ get_ginkgo_data() {
     "${HOME}/.local/bin/ssget";
   unpatch;
   patch -b "${HOME}/.local/bin/ssget" \
-    "${src_home}/iCube/ginkgo/ssget.patch";
+    "${src_home}/exascale/ginkgo/ssget.patch";
   for i in $(seq 1 $(ssget -n));
   do
     ssget -f -i "${i}";

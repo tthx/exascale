@@ -38,9 +38,9 @@ build_pluto() {
     "${pluto_prefix}/.";
   cp -f "${pluto_src_dir}/plann" \
     "${pluto_prefix}/bin/.";
-  cp -f "${src_home}/iCube/pluto/inscop-0.11.4" \
+  cp -f "${src_home}/exascale/pluto/inscop-0.11.4" \
     "${pluto_prefix}/bin/inscop";
-  cp -f "${src_home}/iCube/pluto/polycc-0.11.4" \
+  cp -f "${src_home}/exascale/pluto/polycc-0.11.4" \
     "${pluto_prefix}/bin/polycc";
   return ${?};
 }

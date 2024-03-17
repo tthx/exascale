@@ -66,7 +66,7 @@ build_parmetis() {
   cd "${parmetis_src_dir}";
   git pull --recurse-submodules;
   unpatch;
-  local patch_dir="${src_home}/iCube/ParMETIS/${parmetis_branch}";
+  local patch_dir="${src_home}/exascale/ParMETIS/${parmetis_branch}";
   patch -b "${parmetis_src_dir}/programs/CMakeLists.txt" \
     "${patch_dir}/programs/CMakeLists.txt.patch";
   parmetis_prefix+="/${mpi_impl}";
