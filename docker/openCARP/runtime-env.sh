@@ -145,19 +145,28 @@ python_runtime_env() {
   return 0;
 }
 
-nvidia_hpc_sdk_runtime_env() {
+nvhpc_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  local nvidia_hpc_sdk_root="/opt/nvidia/hpc_sdk";
-  local nvidia_hpc_sdk_version="23.11";
-  if [ -d "${nvidia_hpc_sdk_root}" ];
+  local nvhpc_dir="";
+  if [ -d "${nvhpc_root}" ];
   then
-    export NVARCH="$(uname -s)_$(uname -m)";
-    export NVCOMPILERS="${nvidia_hpc_sdk_root}";
-    export MANPATH="${NVCOMPILERS}/${NVARCH}/${nvidia_hpc_sdk_version}/compilers/man${MANPATH:+:${MANPATH}}";
-    export PATH="${NVCOMPILERS}/${NVARCH}/${nvidia_hpc_sdk_version}/compilers/bin${PATH:+:${PATH}}";
-    export LD_LIBRARY_PATH="${NVCOMPILERS}/${NVARCH}/${nvidia_hpc_sdk_version}/compilers/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
-    export CMAKE_PREFIX_PATH="${NVCOMPILERS}/${NVARCH}/${nvidia_hpc_sdk_version}/cmake${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
-    cuda_root="${NVCOMPILERS}/${NVARCH}/${nvidia_hpc_sdk_version}/cuda";
+    NVARCH="$(uname -s)_$(uname -m)";
+    NVCOMPILERS="${nvhpc_root}";
+    nvhpc_dir="${NVCOMPILERS}/${NVARCH}/${nvhpc_version}";
+    MANPATH="${nvhpc_dir}/compilers/man${MANPATH:+:${MANPATH}}";
+    PATH="${nvhpc_dir}/compilers/bin${PATH:+:${PATH}}";
+    LD_LIBRARY_PATH="${nvhpc_dir}/compilers/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    CMAKE_PREFIX_PATH="${nvhpc_dir}/cmake${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
+    cuda_root="${nvhpc_dir}/cuda/${cuda_version}";
+    CUDA_HOME="${cuda_root}";
+    PATH="${CUDA_HOME}/bin${PATH:+:${PATH}}";
+    LD_LIBRARY_PATH="${CUDA_HOME}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    for i in "${CUDA_HOME}/lib64/cmake/"*;
+    do
+      CMAKE_PREFIX_PATH="${i}${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
+    done
+    export NVARCH NVCOMPILERS CUDA_HOME \
+      MANPATH PATH LD_LIBRARY_PATH CMAKE_PREFIX_PATH;
   elif [ -z "$(which nvc++)" ];
   then
     echoerr "${errmsg} NVIDIA HPC SDK found.";
@@ -169,7 +178,10 @@ nvidia_hpc_sdk_runtime_env() {
 cuda_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local i;
-  if [ -d "${cuda_root}" ];
+  if [ -d "${nvhpc_root}" ];
+  then
+    nvhpc_runtime_env;
+  elif [ -d "${cuda_root}" ];
   then
     export CUDA_HOME="${cuda_root}";
     export PATH="${CUDA_HOME}/bin${PATH:+:${PATH}}";
@@ -733,7 +745,7 @@ runtime_env() {
     fi
     if [ "${1}" == "help" ];
     then
-      echo "Usage: ${BASH_SOURCE} [${python_runtime}|${cuda_runtime}|${llvm_runtime}|${spack_runtime} [${mpi_impl_list//\ /\|}]|[embedded] ${openCARP_runtime} <${mpi_impl_list//\ /\|}> <${vect_type_list//\ /\|}>|${pluto_runtime}|${poly_runtime}|help]";
+      echo "Usage: ${BASH_SOURCE} [${python_runtime}|${cuda_runtime}|${nvhpc_runtime}|${llvm_runtime}|${spack_runtime} [${mpi_impl_list//\ /\|}]|[embedded] ${openCARP_runtime} <${mpi_impl_list//\ /\|}> <${vect_type_list//\ /\|}>|${pluto_runtime}|${poly_runtime}|help]";
       return 0;
     fi
   fi
@@ -747,6 +759,9 @@ runtime_env() {
   case "${torun}" in
     "${python_runtime}")
       python_runtime_env;
+      ;;
+    "${nvhpc_runtime}")
+      nvhpc_runtime_env;
       ;;
     "${cuda_runtime}")
       cuda_runtime_env;

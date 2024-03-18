@@ -2,16 +2,17 @@
 
 build_env() {
   src_home="${src_home:-${HOME}/src}";
-  dev_home="${dev_home:-${dev_home}}";
+  dev_home="${dev_home:-${src_home}/exascale}";
 
   python_runtime="${python_runtime:-python}";
   cuda_runtime="${cuda_runtime:-cuda}";
+  nvhpc_runtime="${nvhpc_runtime:-nvhpc}";
   llvm_runtime="${llvm_runtime:-llvm}";
   poly_runtime="${poly_runtime:-poly}";
   pluto_runtime="${pluto_runtime:-pluto}";
   openCARP_runtime="${openCARP_runtime:-openCARP}";
   spack_runtime="${spack_runtime:-spack}";
-  runtime_list="${runtime_list:-${python_runtime} ${cuda_runtime} ${llvm_runtime} ${poly_runtime} ${pluto_runtime} ${openCARP_runtime} ${spack_runtime}}";
+  runtime_list="${runtime_list:-${python_runtime} ${cuda_runtime} ${nvhpc_runtime} ${llvm_runtime} ${poly_runtime} ${pluto_runtime} ${openCARP_runtime} ${spack_runtime}}";
 
   # python
   if [ -n "$(which python)" ];
@@ -258,6 +259,8 @@ build_env() {
 
   cuda_version="${cuda_version:-11.8}";
   cuda_root="${cuda_root:-/usr/local/cuda-${cuda_version}}";
+  nvhpc_root="${nvhpc_root:-/opt/nvidia/hpc_sdk}";
+  nvhpc_version="${nvhpc_version:-24.3}";
   return 0;
 }
 

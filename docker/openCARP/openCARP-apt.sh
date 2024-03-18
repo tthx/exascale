@@ -43,7 +43,7 @@ nvhpc_install() {
 "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /" | \
     tee /etc/apt/sources.list.d/nvhpc.list > /dev/null;
   apt update;
-  apt install -y --no-install-recommends nvhpc-24-1-cuda-multi;
+  apt install -y --no-install-recommends nvhpc-24-3-cuda-multi;
   return ${?};
 }
 
@@ -95,7 +95,7 @@ openCARP_apt() {
     ${pluto} \
     ${task_based};
     #nvidia-cuda-toolkit \
-  cuda_install;
+  nvhpc_install;
   apt update;
   apt -y dist-upgrade;
   if [ ! -d "${HOME}/.venv/${env_name}" ];
