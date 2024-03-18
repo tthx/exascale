@@ -2,6 +2,7 @@
 
 build_env() {
   src_home="${src_home:-${HOME}/src}";
+  dev_home="${dev_home:-${dev_home}}";
 
   python_runtime="${python_runtime:-python}";
   cuda_runtime="${cuda_runtime:-cuda}";

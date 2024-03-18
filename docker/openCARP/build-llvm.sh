@@ -120,7 +120,7 @@ build_llvm() {
     "${llvm_src_dir}/mlir/python/requirements.txt";
   pip install --upgrade --no-cache-dir \
     "${llvm_src_dir}/llvm/utils/lit";
-  local patch_dir="${src_home}/exascale/llvm/${llvm_branch}";
+  local patch_dir="${dev_home}/llvm/${llvm_branch}";
   unpatch;
   if [ "${llvm_version}" -eq 15 ];
   then

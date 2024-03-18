@@ -27,8 +27,8 @@ then
   export PATH="${HOME}/.local/bin${PATH:+:${PATH}}";
 fi
 
-src_home="${HOME}/src";
-script_dir="${src_home}/exascale/docker/openCARP";
+dev_home="${HOME}/src/exasacle";
+script_dir="${dev_home}/docker/openCARP";
 if [ -d "${script_dir}" ];
 then
   cd "${script_dir}";

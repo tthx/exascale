@@ -99,7 +99,7 @@ apply_patches() {
   local vect_type="${3}";
   local generic_vect_type="${4}";
   local info="${5}";
-  local new_dir="${src_home}/exascale/openCARP/${opencarp_branch}/external/experiments";
+  local new_dir="${dev_home}/openCARP/${opencarp_branch}/external/experiments";
   local new_autotester_dir="${new_dir}/autotester";
   local new_devtests_dir="${new_dir}/regression/devtests";
   if [ "${vect_type}" == "generic" ];

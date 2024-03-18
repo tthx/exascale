@@ -113,7 +113,7 @@ restore() {
 
 apply_patches() {
   local src_dir="${1}";
-  local new_dir="${src_home}/exascale/ginkgo/${ginkgo_branch}";
+  local new_dir="${dev_home}/ginkgo/${ginkgo_branch}";
   cp -f "${new_dir}/benchmark/run_all_benchmarks.sh" \
     "${src_dir}/benchmark/.";
   cp -f "${new_dir}/common/unified/matrix/dense_kernels.instantiate.cpp" \
