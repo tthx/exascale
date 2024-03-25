@@ -157,16 +157,7 @@ nvhpc_runtime_env() {
     PATH="${nvhpc_dir}/compilers/bin${PATH:+:${PATH}}";
     LD_LIBRARY_PATH="${nvhpc_dir}/compilers/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
     CMAKE_PREFIX_PATH="${nvhpc_dir}/cmake${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
-    cuda_root="${nvhpc_dir}/cuda/${cuda_version}";
-    CUDA_HOME="${cuda_root}";
-    PATH="${CUDA_HOME}/bin${PATH:+:${PATH}}";
-    LD_LIBRARY_PATH="${CUDA_HOME}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
-    for i in "${CUDA_HOME}/lib64/cmake/"*;
-    do
-      CMAKE_PREFIX_PATH="${i}${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
-    done
-    export NVARCH NVCOMPILERS CUDA_HOME \
-      MANPATH PATH LD_LIBRARY_PATH CMAKE_PREFIX_PATH;
+    export NVARCH NVCOMPILERS MANPATH PATH LD_LIBRARY_PATH CMAKE_PREFIX_PATH;
   elif [ -z "$(which nvc++)" ];
   then
     echoerr "${errmsg} NVIDIA HPC SDK found.";
@@ -178,10 +169,7 @@ nvhpc_runtime_env() {
 cuda_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local i;
-  if [ -d "${nvhpc_root}" ];
-  then
-    nvhpc_runtime_env;
-  elif [ -d "${cuda_root}" ];
+  if [ -d "${cuda_root}" ];
   then
     export CUDA_HOME="${cuda_root}";
     export PATH="${CUDA_HOME}/bin${PATH:+:${PATH}}";
@@ -287,8 +275,20 @@ mpi_impl_runtime_env() {
 
 mpich_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  echoerr "${errmsg} No openmpi found.";
-  return 1;
+  local prefix="${mpich_prefix}";
+  if [ -d "${prefix}" ];
+  then
+    export MPI_HOME="${prefix}";
+    export PKG_MPI_NAME="mpich";
+    export PATH="${prefix}/sbin:${prefix}/bin${PATH:+:${PATH}}";
+    export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    export PKG_CONFIG_PATH="${prefix}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}";
+    mpi_env_var;
+  else
+    echoerr "${errmsg} No mpich found.";
+    return 1;
+  fi
+  return 0;
 }
 
 openmpi_runtime_env() {

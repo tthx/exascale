@@ -139,13 +139,13 @@ build_petsc_embedded() {
     --download-"${mpi_impl}"="${mpi_download}" \
     --download-hwloc="https://download.open-mpi.org/release/hwloc/v2.9/hwloc-2.9.3.tar.gz" \
     --download-hypre="https://github.com/hypre-space/hypre/archive/refs/tags/${hypre_branch}.tar.gz" \
-    --download-superlu_dist="https://github.com/xiaoyeli/superlu_dist/archive/refs/tags/${superlu_dist_branch}.tar.gz";
-    # --with-kokkos=1 \
-    # --download-kokkos-cmake-arguments="${kokkos_cmake_args}" \
-    # --with-kokkos-kernels=1 \
-    # --download-kokkos-kernels-cmake-arguments="${kokkos_kernels_cmake_args}" \
-    # --download-kokkos="https://github.com/kokkos/kokkos/archive/refs/tags/${kokkos_branch}.tar.gz" \
-    # --download-kokkos-kernels="https://github.com/kokkos/kokkos-kernels/archive/refs/tags/${kokkos_kernels_branch}.tar.gz";
+    --download-superlu_dist="https://github.com/xiaoyeli/superlu_dist/archive/refs/tags/${superlu_dist_branch}.tar.gz" \
+    --with-kokkos=1 \
+    --download-kokkos-cmake-arguments="${kokkos_cmake_args}" \
+    --with-kokkos-kernels=1 \
+    --download-kokkos-kernels-cmake-arguments="${kokkos_kernels_cmake_args}" \
+    --download-kokkos="https://github.com/kokkos/kokkos/archive/refs/tags/${kokkos_branch}.tar.gz" \
+    --download-kokkos-kernels="https://github.com/kokkos/kokkos-kernels/archive/refs/tags/${kokkos_kernels_branch}.tar.gz";
     # --download-"${mpi_impl}" \
     # --download-hwloc \
     # --download-hypre \

@@ -54,10 +54,9 @@ build_mpich() {
       "${mpich_repo_url}" \
       "${mpich_src_dir}";
   fi
-  return 0;
   cd "${mpich_src_dir}";
   git pull --recurse-submodules;
-  ./autogen.pl;
+  ./autogen.sh;
   rm -rf "${mpich_prefix}" \
     "./build";
   mkdir -p "./build";

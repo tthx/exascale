@@ -94,8 +94,7 @@ openCARP_apt() {
     ccache \
     ${pluto} \
     ${task_based};
-    #nvidia-cuda-toolkit \
-  nvhpc_install;
+  cuda_install;
   apt update;
   apt -y dist-upgrade;
   if [ ! -d "${HOME}/.venv/${env_name}" ];
