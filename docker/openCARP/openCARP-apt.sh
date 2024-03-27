@@ -49,12 +49,13 @@ nvhpc_install() {
 
 openCARP_apt() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
-  local task_based="build-essential autoconf coreutils environment-modules gpg zip vim libpciaccess0 libpciaccess-dev libxnvctrl-dev libudev-dev libfabric-dev libgoogle-perftools-dev libasio-dev libopenblas-serial-dev libgtest-dev"; #libboost-all-dev
+  local task_based="build-essential autoconf coreutils environment-modules gpg zip vim libpciaccess0 libpciaccess-dev libxnvctrl-dev libudev-dev libfabric-dev libgoogle-perftools-dev libasio-dev libopenblas-serial-dev libgtest-dev libzstd-dev libbz2-dev"; #libboost-all-dev
   local openmpi="openmpi-bin openmpi-common libopenmpi-dev";
   local starpu="doxygen doxygen-gui doxygen-doc libstarpu-dev starpu-tools starpu-examples";
   local pluto="texinfo libyaml-dev libgmp3-dev glpk-utils libglpk-dev";
   local gcc_version="12";
   local gcc="gcc-${gcc_version} g++-${gcc_version} gfortran-${gcc_version} cc-${gcc_version}-multilib g++-${gcc_version}-multilib gfortran-${gcc_version}-multilib";
+  local mpich="libpsm-infinipath1-dev libpsm2-dev librdmacm-dev libibverbs-dev";
   export DEBIAN_FRONTEND="noninteractive";
   . "${script_dir}/build-env.sh";
   apt update;
@@ -87,13 +88,15 @@ openCARP_apt() {
     python3 \
     python-is-python3 \
     python3-dev \
+    python-dev-is-python3 \
     python3-venv \
     python3-distutils \
     libffi-dev libelf-dev libelfin-dev \
     flex bison \
     ccache \
     ${pluto} \
-    ${task_based};
+    ${task_based} \
+    ${mpich};
   cuda_install;
   apt update;
   apt -y dist-upgrade;

@@ -77,7 +77,7 @@ build_mpich() {
     --with-cuda="${CUDA_HOME}" \
     --enable-fast=all,O3;
   make -j $(nproc);
-  make testing;
+  make check;
   make install;
   return ${?};
 }

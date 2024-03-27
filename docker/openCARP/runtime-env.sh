@@ -309,6 +309,21 @@ openmpi_runtime_env() {
   return 0;
 }
 
+boost_runtime_env() {
+  local errmsg="ERROR: ${FUNCNAME[0]}:";
+  local mpi_impl="${1:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
+  local prefix="${boost_prefix}/${mpi_impl}";
+  if [ -d "${prefix}" ];
+  then
+    export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    export CMAKE_PREFIX_PATH="${prefix}/lib/cmake${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
+  else
+    echoerr "${errmsg} No boost found.";
+    return 1;
+  fi
+  return 0;
+}
+
 parmetis_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local mpi_impl="${1:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";

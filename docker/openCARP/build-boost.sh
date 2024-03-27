@@ -1,18 +1,18 @@
 #!/bin/bash
 set -euo pipefail;
 
-build_hpx() {
+build_boost() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
   local mpi_impl="${2:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
+  python_runtime_env;
   cuda_runtime_env;
   hwloc_runtime_env;
   ucx_runtime_env;
   mpi_impl_runtime_env "${mpi_impl}";
-  boost_runtime_env "${mpi_impl}";
   local type="${3:-${gcc_type}}";
   local poly="${4:-OFF}";
   local cc="/usr/bin/gcc";
@@ -50,21 +50,19 @@ build_hpx() {
     fi
     type+="-${poly}-$(${cc} --version | awk '/^gcc/{print $4}')"
   fi
-  if [ ! -d "${hpx_src_dir}" ];
+  if [ ! -d "${boost_src_dir}" ];
   then
     git clone \
       --depth=1 \
       --recursive \
-      -b "${hpx_branch}" \
-      "${hpx_repo_url}" \
-      "${hpx_src_dir}";
+      -b "boost-${boost_branch}" \
+      "${boost_repo_url}" \
+      "${boost_src_dir}";
   fi
-  cd "${hpx_src_dir}";
-  git pull --recurse-submodules;
-  hpx_prefix+="/${mpi_impl}";
-  rm -rf "${hpx_prefix}" "./build";
-  mkdir "./build";
-  cd "./build";
+  cd "${boost_src_dir}";
+  #git pull --recurse-submodules;
+  boost_prefix+="/${mpi_impl}";
+  rm -rf "${boost_prefix}" "./build";
   export CC="${cc}";
   export CFLAGS="${cflags}";
   export CXX="${cxx}";
@@ -73,32 +71,28 @@ build_hpx() {
   export CUDACXX="${cudac}";
   export CUDAFLAGS="${cudaflags}";
   export LDFLAGS="${ldflags}";
-  cmake -G Ninja .. \
-    -DCMAKE_C_COMPILER="${cc}" \
-    -DCMAKE_C_FLAGS="${cflags}" \
-    -DCMAKE_CXX_COMPILER="${cxx}" \
-    -DCMAKE_CXX_FLAGS="${cxxflags}" \
-    -DHPX_WITH_CXX_STANDARD="${cxx_dialect}" \
-    -DCMAKE_CUDA_COMPILER="${cudac}" \
-    -DCMAKE_CUDA_ARCHITECTURES="${cuda_arch}" \
-    -DCMAKE_CUDA_FLAGS="${cudaflags}" \
-    -DCUDA_STANDARD="${cxx_dialect}" \
-    -DCMAKE_EXE_LINKER_FLAGS="${ldflags}" \
-    -DCMAKE_SHARED_LINKER_FLAGS="${ldflags}" \
-    -DCMAKE_MODULE_LINKER_FLAGS="${ldflags}" \
-    -DCMAKE_INSTALL_PREFIX="${hpx_prefix}" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DHPX_WITH_CXX_STANDARD="${cxx_dialect}" \
-    -DHPX_WITH_CUDA=ON \
-    -DHPX_WITH_PARCELPORT_MPI=ON \
-    -DHPX_WITH_DEPRECATION_WARNINGS=OFF \
-    -DHPX_WITH_EXAMPLES=ON \
-    -DHPX_WITH_TESTS=ON \
-    -DHPX_WITH_TOOLS=ON;
-  ninja -j $(nproc);
-  ninja -j $(nproc) tests;
-  ninja install;
+  mkdir -p "./build";
+  echo \
+"using mpi ;" | \
+    tee "${HOME}/user-config.jam" > /dev/null;
+  ./bootstrap.sh \
+    --prefix="${boost_prefix}";
+  ./b2 \
+    install -q -j$(nproc) \
+    --build-dir="${boost_src_dir}/build" \
+    --prefix="${boost_prefix}" \
+    --build-type=complete \
+    --layout=tagged \
+    variant=release \
+    link=shared \
+    threading=multi \
+    runtime-link=shared \
+    cxxflags="${cxxflags} -std=c++${cxx_dialect}" \
+    cflags="${cflags}";
+  cd "${boost_src_dir}/status";
+  ../b2 -q -j$(nproc);
+  rm -f "${HOME}/user-config.jam";
   return ${?};
 }
 
-build_hpx "${@}";
+build_boost "${@}";

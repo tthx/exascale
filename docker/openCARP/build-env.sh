@@ -30,6 +30,12 @@ build_env() {
   graphite_cflags="${graphite_cflags:--floop-nest-optimize -floop-parallelize-all}"; #-fgraphite -fopenmp
   graphite_cxxflags="${graphite_cxxflags:-${graphite_cflags}}";
 
+  # boost
+  boost_repo_url="${boost_repo_url:-https://github.com/boostorg/boost.git}";
+  boost_branch="${boost_branch:-1.84.0}";
+  boost_prefix="${boost_prefix:-/opt/boost/${boost_branch}}";
+  boost_src_dir="${boost_src_dir:-${src_home}/boost/${boost_branch}}";
+
   # hwloc
   hwloc_repo_url="${hwloc_repo_url:-https://github.com/open-mpi/hwloc.git}";
   hwloc_branch="${hwloc_branch:-v2.9}";
