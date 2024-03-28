@@ -30,6 +30,7 @@ build_lci() {
   fi
   cd "${lci_src_dir}";
   git pull --recurse-submodules;
+  lci_prefix+="/${mpi_impl}";
   rm -rf "${lci_prefix}" "./build";
   mkdir "./build";
   cd "./build";

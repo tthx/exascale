@@ -208,11 +208,35 @@ libfabric_runtime_env() {
   local prefix="${libfabric_prefix}";
   if [ -d "${prefix}" ];
   then
+    export LIBFABRIC_ROOT="${prefix}";
+    export LIBFABRIC_INCLUDE_DIR="${prefix}/include";
+    export LIBFABRIC_LIBRARY="${prefix}/lib";
     export PATH="${prefix}/bin${PATH:+:${PATH}}";
     export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
     export PKG_CONFIG_PATH="${prefix}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}";
   else
     echoerr "${errmsg} No libfabric found.";
+    return 1;
+  fi
+  return 0;
+}
+
+lci_runtime_env() {
+  local errmsg="ERROR: ${FUNCNAME[0]}:";
+  local mpi_impl="${1:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
+  local prefix="${lci_prefix}/${mpi_impl}";
+  if [ -d "${prefix}" ];
+  then
+    export PATH="${prefix}/sbin:${prefix}/bin${PATH:+:${PATH}}";
+    export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    export PKG_CONFIG_PATH="${prefix}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}";
+    for i in "${prefix}/lib/cmake/"*;
+    do
+      CMAKE_PREFIX_PATH="${i}${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
+    done
+    export CMAKE_PREFIX_PATH;
+  else
+    echoerr "${errmsg} No lci found.";
     return 1;
   fi
   return 0;

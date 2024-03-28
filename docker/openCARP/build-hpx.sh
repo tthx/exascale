@@ -12,8 +12,10 @@ build_hpx() {
   cuda_runtime_env;
   hwloc_runtime_env;
   ucx_runtime_env;
+  libfabric_runtime_env;
   mpi_impl_runtime_env "${mpi_impl}";
   boost_runtime_env "${mpi_impl}";
+  lci_runtime_env "${mpi_impl}";
   local type="${3:-${gcc_type}}";
   local poly="${4:-OFF}";
   local cc="/usr/bin/gcc";
@@ -79,7 +81,6 @@ build_hpx() {
     -DCMAKE_C_FLAGS="${cflags}" \
     -DCMAKE_CXX_COMPILER="${cxx}" \
     -DCMAKE_CXX_FLAGS="${cxxflags}" \
-    -DHPX_WITH_CXX_STANDARD="${cxx_dialect}" \
     -DCMAKE_CUDA_COMPILER="${cudac}" \
     -DCMAKE_CUDA_ARCHITECTURES="${cuda_arch}" \
     -DCMAKE_CUDA_FLAGS="${cudaflags}" \
@@ -92,7 +93,7 @@ build_hpx() {
     -DHPX_WITH_CXX_STANDARD="${cxx_dialect}" \
     -DHPX_WITH_CUDA=ON \
     -DHPX_WITH_PARCELPORT_LCI=ON \
-    -DHPX_WITH_PARCELPORT_LIBFABRIC=ON \
+    -DHPX_WITH_PARCELPORT_LIBFABRIC=OFF \
     -DHPX_WITH_PARCELPORT_MPI=ON \
     -DHPX_WITH_DEPRECATION_WARNINGS=OFF \
     -DHPX_WITH_EXAMPLES=ON \

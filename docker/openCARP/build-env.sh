@@ -30,6 +30,12 @@ build_env() {
   graphite_cflags="${graphite_cflags:--floop-nest-optimize -floop-parallelize-all}"; #-fgraphite -fopenmp
   graphite_cxxflags="${graphite_cxxflags:-${graphite_cflags}}";
 
+  # OpenPMIx
+  openpmix_repo_url="${openpmix_repo_url:-https://github.com/openpmix/openpmix.git}";
+  openpmix_branch="${openpmix_branch:-v5.0.2}";
+  openpmix_prefix="${openpmix_prefix:-/opt/openpmix/${openpmix_branch}}";
+  openpmix_src_dir="${openpmix_src_dir:-${src_home}/openpmix/${openpmix_branch}}";
+
   # libfabric
   libfabric_repo_url="${libfabric_repo_url:-https://github.com/ofiwg/libfabric.git}";
   libfabric_branch="${libfabric_branch:-v1.20.1}";
