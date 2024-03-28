@@ -1,13 +1,14 @@
 #!/bin/bash
 set -euo pipefail;
 
-# ERROR: One test failed: "FAIL: hwloc_get_area_memlocation"
-build_hwloc() {
+build_libfabric() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
   cuda_runtime_env;
+  hwloc_runtime_env;
+  ucx_runtime_env;
   local type="${2:-${gcc_type}}";
   local poly="${3:-OFF}";
   local cc="/usr/bin/gcc";
@@ -42,34 +43,33 @@ build_hwloc() {
     fi
     type+="-${poly}-$(${cc} --version | awk '/^gcc/{print $4}')"
   fi
-  if [ ! -d "${hwloc_src_dir}" ];
+  if [ ! -d "${libfabric_src_dir}" ];
   then
     git clone \
       --depth=1 \
       --recursive \
-      -b "${hwloc_branch}" \
-      "${hwloc_repo_url}" \
-      "${hwloc_src_dir}";
+      -b "${libfabric_branch}" \
+      "${libfabric_repo_url}" \
+      "${libfabric_src_dir}";
   fi
-  cd "${hwloc_src_dir}";
+  cd "${libfabric_src_dir}";
   git pull --recurse-submodules;
-  rm -rf "${hwloc_prefix}";
+  rm -rf "${libfabric_prefix}";
+  export CC="${cc}";
+  export CFLAGS="${cflags} -I${ucx_prefix}/include -I${CUDA_HOME}/include";
+  export CXX="${cxx}";
+  export CXXFLAGS="${cxxflags}";
+  export LDFLAGS="${ldflags}";
+  export LIBS="-L${ucx_prefix}/lib -lucp -luct -lucm -lucs -L${CUDA_HOME}/lib64 -lcudart -L${CUDA_HOME}/lib64/stubs -lcuda -lnvidia-ml";
   ./autogen.sh;
   ./configure \
-    CC="${cc}" \
-    CFLAGS="${cflags}" \
-    CXX="${cxx}" \
-    CXXFLAGS="${cxxflags}" \
-    CUDAC="${cudac}" \
-    CUDACXX="${cudac}" \
-    CUDAFLAGS="${cudaflags}" \
-    LDFLAGS="${ldflags}" \
-    --prefix="${hwloc_prefix}" \
+    --prefix="${libfabric_prefix}" \
+    --enable-ucx=yes \
     --with-cuda="${CUDA_HOME}";
-  make -j $(nproc) all;
+  make -j $(nproc);
   make check;
   make install;
   return ${?};
 }
 
-build_hwloc "${@}";
+build_libfabric "${@}";

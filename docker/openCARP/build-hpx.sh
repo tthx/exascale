@@ -8,6 +8,7 @@ build_hpx() {
   local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
   local mpi_impl="${2:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
+  python_runtime_env;
   cuda_runtime_env;
   hwloc_runtime_env;
   ucx_runtime_env;
@@ -90,6 +91,8 @@ build_hpx() {
     -DCMAKE_BUILD_TYPE=Release \
     -DHPX_WITH_CXX_STANDARD="${cxx_dialect}" \
     -DHPX_WITH_CUDA=ON \
+    -DHPX_WITH_PARCELPORT_LCI=ON \
+    -DHPX_WITH_PARCELPORT_LIBFABRIC=ON \
     -DHPX_WITH_PARCELPORT_MPI=ON \
     -DHPX_WITH_DEPRECATION_WARNINGS=OFF \
     -DHPX_WITH_EXAMPLES=ON \

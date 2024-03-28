@@ -203,6 +203,21 @@ hwloc_runtime_env() {
   return 0;
 }
 
+libfabric_runtime_env() {
+  local errmsg="ERROR: ${FUNCNAME[0]}:";
+  local prefix="${libfabric_prefix}";
+  if [ -d "${prefix}" ];
+  then
+    export PATH="${prefix}/bin${PATH:+:${PATH}}";
+    export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
+    export PKG_CONFIG_PATH="${prefix}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}";
+  else
+    echoerr "${errmsg} No libfabric found.";
+    return 1;
+  fi
+  return 0;
+}
+
 ucx_runtime_env() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local prefix="${ucx_prefix}";
@@ -315,6 +330,9 @@ boost_runtime_env() {
   local prefix="${boost_prefix}/${mpi_impl}";
   if [ -d "${prefix}" ];
   then
+    export BOOST_ROOT="${prefix}";
+    export BOOST_INCLUDEDIR="${prefix}/include";
+    export BOOST_LIBRARYDIR="${prefix}/lib";
     export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}";
     export CMAKE_PREFIX_PATH="${prefix}/lib/cmake${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}";
   else

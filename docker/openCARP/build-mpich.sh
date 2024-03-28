@@ -6,9 +6,11 @@ build_mpich() {
   local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
+  python_runtime_env;
   cuda_runtime_env;
   hwloc_runtime_env;
   ucx_runtime_env;
+  libfabric_runtime_env;
   local type="${2:-${gcc_type}}";
   local poly="${3:-OFF}";
   local cc="/usr/bin/gcc";
@@ -63,7 +65,7 @@ build_mpich() {
   cd "./build";
   ../configure \
     CC="${cc}" \
-    CFLAGS="${cflags}" \
+    CFLAGS="${cflags} -I${ucx_prefix}/include -I${CUDA_HOME}/include" \
     CXX="${cxx}" \
     CXXFLAGS="${cxxflags}" \
     CUDAC="${cudac}" \
@@ -71,11 +73,17 @@ build_mpich() {
     FC="${fortran}" \
     FCFLAGS="${fcflags}" \
     LDFLAGS="${ldflags}" \
+    LIBS="-L${ucx_prefix}/lib -lucp -luct -lucm -lucs -L${CUDA_HOME}/lib64 -lcudart -L${CUDA_HOME}/lib64/stubs -lcuda -lnvidia-ml" \
     --prefix="${mpich_prefix}" \
     --with-hwloc="${hwloc_prefix}" \
+    --with-libfabric="${libfabric_prefix}" \
     --with-ucx="${ucx_prefix}" \
     --with-cuda="${CUDA_HOME}" \
-    --enable-fast=all,O3;
+    --enable-fast=all,O3 \
+    --disable-fortran \
+    --disable-f77 \
+    --disable-f90 \
+    --disable-f08;
   make -j $(nproc);
   make check;
   make install;

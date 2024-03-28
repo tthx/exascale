@@ -30,6 +30,18 @@ build_env() {
   graphite_cflags="${graphite_cflags:--floop-nest-optimize -floop-parallelize-all}"; #-fgraphite -fopenmp
   graphite_cxxflags="${graphite_cxxflags:-${graphite_cflags}}";
 
+  # libfabric
+  libfabric_repo_url="${libfabric_repo_url:-https://github.com/ofiwg/libfabric.git}";
+  libfabric_branch="${libfabric_branch:-v1.20.1}";
+  libfabric_prefix="${libfabric_prefix:-/opt/libfabric/${libfabric_branch}}";
+  libfabric_src_dir="${libfabric_src_dir:-${src_home}/libfabric/${libfabric_branch}}";
+
+  # Lightweight Communication Interface (LCI)
+  lci_repo_url="${lci_repo_url:-https://github.com/uiuc-hpc/LC.git}";
+  lci_branch="${lci_branch:-v1.7.6}";
+  lci_prefix="${lci_prefix:-/opt/lci/${lci_branch}}";
+  lci_src_dir="${lci_src_dir:-${src_home}/lci/${lci_branch}}";
+
   # boost
   boost_repo_url="${boost_repo_url:-https://github.com/boostorg/boost.git}";
   boost_branch="${boost_branch:-1.84.0}";

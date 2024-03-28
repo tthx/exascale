@@ -49,7 +49,7 @@ nvhpc_install() {
 
 openCARP_apt() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
-  local task_based="build-essential autoconf coreutils environment-modules gpg zip vim libpciaccess0 libpciaccess-dev libxnvctrl-dev libudev-dev libfabric-dev libgoogle-perftools-dev libasio-dev libopenblas-serial-dev libgtest-dev libzstd-dev libbz2-dev"; #libboost-all-dev
+  local task_based="build-essential autoconf coreutils environment-modules gpg zip vim libpciaccess0 libpciaccess-dev libxnvctrl-dev libudev-dev libgoogle-perftools-dev libasio-dev libopenblas-serial-dev libgtest-dev libzstd-dev libbz2-dev libmpfr-dev libmpfrc++-dev libeigen3-dev libmpfi-dev libtommath-dev libnuma-dev";
   local openmpi="openmpi-bin openmpi-common libopenmpi-dev";
   local starpu="doxygen doxygen-gui doxygen-doc libstarpu-dev starpu-tools starpu-examples";
   local pluto="texinfo libyaml-dev libgmp3-dev glpk-utils libglpk-dev";
