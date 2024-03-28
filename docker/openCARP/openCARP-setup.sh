@@ -18,7 +18,7 @@ openCARP_setup() {
     return 0;
   fi
   local llvm_version="${1:?"${errmsg} Missing LLVM version"}";
-  local cuda_arch="${2:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${2:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local mpi_impl="${3:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
   local vect_type="${4:?"${errmsg} Missing vector/matrix type, supported are: [${vect_type_list//\ /,\ }]"}";

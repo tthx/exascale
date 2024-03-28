@@ -153,7 +153,7 @@ build_ginkgo() {
     echo "Usage: ${BASH_SOURCE} [embedded] <cuda_arch> <${mpi_impl_list//\ /\|}> [gcc|llvm](default:gcc) [poly](default:OFF) [cxx_dialect](default:17) [openmp](default:OFF)";
     return 0;
   fi
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local mpi_impl="${2:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
   cuda_runtime_env;

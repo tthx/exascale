@@ -4,7 +4,7 @@ set -euo pipefail;
 # WARNING: Don't use clang: compilations passed but tests failed
 build_ucx() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   cuda_runtime_env;

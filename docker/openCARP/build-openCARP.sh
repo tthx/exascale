@@ -106,7 +106,7 @@ build_openCARP() {
     echo "Usage: ${BASH_SOURCE} [embedded] <cuda_arch> <${mpi_impl_list//\ /\|}> <${vect_type_list//\ /\|}> [gcc|llvm](default:llvm) [poly](default:OFF) [cxx_dialect](default:17) [openmp](default:OFF)";
     return 0;
   fi
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local mpi_impl="${2:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
   local vect_type="${3:?"${errmsg} Missing vector/matrix type, supported are: [${vect_type_list//\ /,\ }]"}";

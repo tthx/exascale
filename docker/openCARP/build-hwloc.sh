@@ -6,7 +6,7 @@ build_hwloc() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   cuda_runtime_env;
   local type="${2:-${gcc_type}}";
   local poly="${3:-OFF}";

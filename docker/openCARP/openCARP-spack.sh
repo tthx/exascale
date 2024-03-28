@@ -39,7 +39,7 @@ openCARP_spack() {
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local mpi_impl="${2:?"${errmsg} Missing MPI implementation, supported are: [${mpi_impl_list//\ /,\ }]"}";
   check_mpi_impl "${mpi_impl}";
   local compiler="%${3:-"gcc"}";

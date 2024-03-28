@@ -92,7 +92,7 @@ build_n() {
 build_llvm() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
   local llvm_version="${1:?"${errmsg} Missing LLVM version"}";
-  local cuda_arch="${2:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${2:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local n="${3:-1}";
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";

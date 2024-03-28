@@ -4,7 +4,7 @@ set -euo pipefail;
 # ERROR: At least "sparse/unit_test/backends/Test_Cuda_Sparse.cpp" compilation failed.
 build_kokkos_kernels() {
   local errmsg="ERROR: ${FUNCNAME[0]}:";
-  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86)"}";
+  local cuda_arch="${1:?"${errmsg} Missing CUDA arch (e.g. 61, 86, 75)"}";
   local script_dir="$(dirname "$(readlink -f "${BASH_SOURCE}")")";
   . "${script_dir}/runtime-env.sh";
   cuda_runtime_env;
