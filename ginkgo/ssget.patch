@@ -1,0 +1,18 @@
+--- /home/thtrinh/src/ssget/master/ssget	2023-07-18 17:38:01.190639854 +0200
++++ /home/thtrinh/.local/bin/ssget	2023-07-18 17:47:35.817646975 +0200
+@@ -36,7 +36,14 @@
+ 
+ THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" &>/dev/null && pwd )
+ SS_URL="https://sparse.tamu.edu"
+-ARCHIVE_LOCATION="${HOME}/.config/ssget"
++case "$(hostname)" in
++  "gits-icube")
++    ARCHIVE_LOCATION="${HOME}/.config/ssget";
++    ;;
++  *)
++    ARCHIVE_LOCATION="/mnt/data-0/ssget";
++    ;;
++esac
+ 
+ mkdir -p "${ARCHIVE_LOCATION}"
+ 

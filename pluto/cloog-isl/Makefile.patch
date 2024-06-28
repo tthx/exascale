@@ -1,0 +1,40 @@
+--- cloog-isl/Makefile.orig	2023-06-21 14:18:09.809049715 +0200
++++ cloog-isl/Makefile	2023-06-21 14:34:43.760106438 +0200
+@@ -2064,7 +2064,7 @@
+ 	$(MAKE) $(AM_MAKEFLAGS) $(check_SCRIPTS)
+ 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+ check: check-recursive
+-all-am: Makefile $(PROGRAMS) $(LTLIBRARIES) $(DATA) $(HEADERS)
++all-am: Makefile $(PROGRAMS) $(LTLIBRARIES) $(HEADERS)
+ install-binPROGRAMS: install-libLTLIBRARIES
+ 
+ installdirs: installdirs-recursive
+@@ -2156,8 +2156,8 @@
+ 
+ info-am:
+ 
+-install-data-am: install-data-local install-dist_pdfDATA \
+-	install-pdfDATA install-pkgincludeHEADERS \
++install-data-am: install-data-local \
++	install-pkgincludeHEADERS \
+ 	install-pkgislincludeHEADERS install-pkgmatrixincludeHEADERS
+ 
+ install-dvi: install-dvi-recursive
+@@ -2248,7 +2248,7 @@
+ 	install-dist_pdfDATA install-dvi install-dvi-am install-exec \
+ 	install-exec-am install-html install-html-am install-info \
+ 	install-info-am install-libLTLIBRARIES install-man install-pdf \
+-	install-pdf-am install-pdfDATA install-pkgincludeHEADERS \
++	install-pdf-am install-pkgincludeHEADERS \
+ 	install-pkgislincludeHEADERS install-pkgmatrixincludeHEADERS \
+ 	install-ps install-ps-am install-strip installcheck \
+ 	installcheck-am installdirs installdirs-am maintainer-clean \
+@@ -2304,8 +2304,6 @@
+ 	@echo "              *        Generating CLooG's documentation       *"
+ 	@echo "              *-----------------------------------------------*/"
+ 	doxygen ./autoconf/Doxyfile
+-doc/cloog.pdf: doc/cloog.texi doc/gitversion.texi
+-	$(TEXI2DVI) -I $(top_builddir)/doc --pdf $< -o $@
+ 
+ doc/gitversion.texi: 
+ 	echo '@set VERSION '`$(top_builddir)/genversion.sh`'' > $@

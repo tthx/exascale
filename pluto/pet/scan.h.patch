@@ -1,0 +1,11 @@
+--- scan.h	2023-06-08 13:00:14.805459976 +0200
++++ ../../master.tth/pet/scan.h	2023-06-08 10:32:27.527996054 +0200
+@@ -71,7 +71,7 @@
+  */
+ struct less_name {
+ 	bool operator()(const clang::TypeDecl *x,
+-			const clang::TypeDecl *y) {
++			const clang::TypeDecl *y) const {
+ 		return x->getNameAsString().compare(y->getNameAsString()) < 0;
+ 	}
+ };

@@ -1,0 +1,136 @@
+--- ./pet.cc	2023-06-08 13:00:14.804460014 +0200
++++ ../../master.tth/pet/pet.cc	2023-06-08 10:32:27.525996135 +0200
+@@ -49,7 +49,12 @@
+ #endif
+ #include <llvm/Support/raw_ostream.h>
+ #include <llvm/Support/ManagedStatic.h>
++#include <llvm/Support/MemoryBuffer.h>
++#ifdef HAVE_TARGETPARSER_HOST_H
++#include <llvm/TargetParser/Host.h>
++#else
+ #include <llvm/Support/Host.h>
++#endif
+ #include <clang/Basic/Version.h>
+ #include <clang/Basic/Builtins.h>
+ #include <clang/Basic/FileSystemOptions.h>
+@@ -780,7 +785,7 @@
+ #endif
+ 	virtual void HandleDiagnostic(DiagnosticsEngine::Level level,
+ 					const DiagnosticInfo &info) {
+-		if (info.getID() == diag::ext_implicit_function_decl &&
++		if (info.getID() == diag::ext_implicit_function_decl_c99 &&
+ 		    info.getNumArgs() >= 1 &&
+ 		    info.getArgKind(0) == DiagnosticsEngine::ak_identifierinfo &&
+ 		    is_implicit(info.getArgIdentifier(0), pencil))
+@@ -1011,12 +1016,15 @@
+ 
+ #ifdef SETLANGDEFAULTS_TAKES_5_ARGUMENTS
+ 
++#include "set_lang_defaults_arg4.h"
++
+ static void set_lang_defaults(CompilerInstance *Clang)
+ {
+ 	PreprocessorOptions &PO = Clang->getPreprocessorOpts();
+ 	TargetOptions &TO = Clang->getTargetOpts();
+ 	llvm::Triple T(TO.Triple);
+-	CompilerInvocation::setLangDefaults(Clang->getLangOpts(), IK_C, T, PO,
++	SETLANGDEFAULTS::setLangDefaults(Clang->getLangOpts(), IK_C, T,
++					    setLangDefaultsArg4(PO),
+ 					    LangStandard::lang_unspecified);
+ }
+ 
+@@ -1086,27 +1094,65 @@
+ 	return ignore_error(Clang->getFileManager().getFile(Filename));
+ }
+ 
++/* Return the ownership of "buffer".
++ *
++ * If "buffer" is a pointer, simply return the pointer.
++ * If "buffer" is a std::unique_ptr, call release() on it.
++ * Note that std::unique_ptr was not being used back when clang
++ * was still using llvm::OwningPtr.
++ */
++static llvm::MemoryBuffer *release(llvm::MemoryBuffer *buffer)
++{
++	return buffer;
++}
++#ifndef HAVE_ADT_OWNINGPTR_H
++static llvm::MemoryBuffer *release(std::unique_ptr<llvm::MemoryBuffer> buffer)
++{
++	return buffer.release();
++}
++#endif
++
++/* Pencil specific predefines.
++ */
++static const char *pencil_predefines =
++	"void __pencil_assume(int assumption);\n"
++	"#define pencil_access(f) annotate(\"pencil_access(\" #f \")\")\n";
++
+ /* Add pet specific predefines to the preprocessor.
+  * Currently, these are all pencil specific, so they are only
+  * added if "pencil" is set.
+  *
+- * We mimic the way <command line> is handled inside clang.
++ * Include a special "/pet" header and ensure it gets replaced
++ * by "pencil_predefines" by mapping the "/pet" file to a memory buffer.
+  */
+-void add_predefines(Preprocessor &PP, int pencil)
++static void add_predefines(PreprocessorOptions &PO, int pencil)
+ {
+-	string s;
+-
+ 	if (!pencil)
+ 		return;
+ 
+-	s = PP.getPredefines();
+-	s += "# 1 \"<pet>\" 1\n"
+-	     "void __pencil_assume(int assumption);\n"
+-	     "#define pencil_access(f) annotate(\"pencil_access(\" #f \")\")\n"
+-	     "# 1 \"<built-in>\" 2\n";
+-	PP.setPredefines(s);
++	PO.Includes.push_back("/pet");
++	PO.addRemappedFile("/pet",
++		release(llvm::MemoryBuffer::getMemBuffer(pencil_predefines)));
+ }
+ 
++/* Do not treat implicit function declaration warnings as errors.
++ *
++ * Only do this if DiagnosticsEngine::setDiagnosticGroupWarningAsError
++ * is available.  In earlier versions of clang, these warnings
++ * are not treated as errors by default.
++ */
++#ifdef HAVE_SET_DIAGNOSTIC_GROUP_WARNING_AS_ERROR
++static void set_implicit_function_declaration_no_error(DiagnosticsEngine &Diags)
++{
++	Diags.setDiagnosticGroupWarningAsError("implicit-function-declaration",
++		false);
++}
++#else
++static void set_implicit_function_declaration_no_error(DiagnosticsEngine &Diags)
++{
++}
++#endif
++
+ /* Extract a pet_scop from each function in the C source file called "filename".
+  * Each detected scop is passed to "fn".
+  * If "function" is not NULL, only extract a pet_scop from the function
+@@ -1126,6 +1172,7 @@
+ 	create_diagnostics(Clang);
+ 	DiagnosticsEngine &Diags = Clang->getDiagnostics();
+ 	Diags.setSuppressSystemWarnings(true);
++	set_implicit_function_declaration_no_error(Diags);
+ 	TargetInfo *target = create_target_info(Clang, Diags);
+ 	Clang->setTarget(target);
+ 	set_lang_defaults(Clang);
+@@ -1142,9 +1189,9 @@
+ 	PreprocessorOptions &PO = Clang->getPreprocessorOpts();
+ 	for (int i = 0; i < options->n_define; ++i)
+ 		PO.addMacroDef(options->defines[i]);
++	add_predefines(PO, options->pencil);
+ 	create_preprocessor(Clang);
+ 	Preprocessor &PP = Clang->getPreprocessor();
+-	add_predefines(PP, options->pencil);
+ 	PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(),
+ 		PP.getLangOpts());
+ 

@@ -1,0 +1,11 @@
+--- ./llvm/release/15.x/openmp/libomptarget/include/Debug.h	2023-12-28 19:18:20.506756350 +0100
++++ /home/tth/src/llvm/release/15.x/openmp/libomptarget/include/Debug.h	2023-12-28 19:19:24.575180203 +0100
+@@ -39,6 +39,8 @@
+ 
+ #include <atomic>
+ #include <mutex>
++#include <cstdlib>
++#include <string>
+ 
+ /// 32-Bit field data attributes controlling information presented to the user.
+ enum OpenMPInfoType : uint32_t {

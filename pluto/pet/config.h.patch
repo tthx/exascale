@@ -1,0 +1,11 @@
+--- /root/tmp/config.h	2023-06-08 16:19:12.665848629 +0200
++++ ./config.h	2023-06-08 16:19:49.160484838 +0200
+@@ -159,7 +159,7 @@
+ #define SETLANGDEFAULTS LangOptions
+ 
+ /* Define if CompilerInvocation::setLangDefaults takes 5 arguments */
+-/* #undef SETLANGDEFAULTS_TAKES_5_ARGUMENTS */
++#define SETLANGDEFAULTS_TAKES_5_ARGUMENTS
+ 
+ /* Define to 1 if all of the C90 standard headers exist (not just the ones
+    required in a freestanding environment). This macro is provided for
